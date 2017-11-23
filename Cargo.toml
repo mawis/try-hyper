@@ -1,0 +1,8 @@
+[package]
+name = "hypertry"
+version = "0.1.0"
+authors = ["Matthias Wimmer <m@tthias.eu>"]
+
+[dependencies]
+futures = "0.1.14"
+hyper = "0.11.2"
