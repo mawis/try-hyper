@@ -6,9 +6,10 @@ use hyper::header::ContentLength;
 use hyper::header::ContentType;
 use hyper::server::{Http, Request, Response, Service};
 
-struct HelloWorld;
-
-const PHRASE: &'static str = "你好！";
+#[derive(Clone)]
+struct HelloWorld {
+    phrase: String
+}
 
 impl Service for HelloWorld {
     // boilerplate hooking up hyper's server types
@@ -22,17 +23,18 @@ impl Service for HelloWorld {
     fn call(&self, _req: Request) -> Self::Future {
         // We're currently igonoring the Request
         // And returning an 'ok' Future, which means it's ready
-        // immediately, and build a Response with the 'PHRASE' body.
+        // immediately, and build a Response with the 'phrase' body.
         Box::new(futures::future::ok(
             Response::new()
-                .with_header(ContentLength(PHRASE.len() as u64))
+                .with_header(ContentLength(self.phrase.len() as u64))
                 .with_header(ContentType::plaintext())
-                .with_body(PHRASE)))
+                .with_body(self.phrase.clone())))
     }
 }
 
 fn main() {
     let addr = "127.0.0.1:3000".parse().unwrap();
-    let server = Http::new().bind(&addr, || Ok(HelloWorld)).unwrap();
+    let service = HelloWorld {phrase: String::from("こにちわ")};
+    let server = Http::new().bind(&addr, move || Ok(service.clone())).unwrap();
     server.run().unwrap();
 }
