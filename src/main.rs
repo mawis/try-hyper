@@ -34,7 +34,7 @@ impl Service for HelloWorld {
 
 fn main() {
     let addr = "127.0.0.1:3000".parse().unwrap();
-    let service = HelloWorld {phrase: String::from("こにちわ")};
+    let service = HelloWorld {phrase: String::from("今日は")};
     let server = Http::new().bind(&addr, move || Ok(service.clone())).unwrap();
     server.run().unwrap();
 }
